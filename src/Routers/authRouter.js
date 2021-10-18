@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const UserModel = require('../Models/userModel');
 const bcrypt = require('bcrypt');
-const basicAuth = require('../Models/basicAuth');
+const basicAuth = require('../middlewares/basicAuth');
 
 router.post('/signup', async (req, res) => {
   try {
@@ -27,5 +27,5 @@ router.post('/signin', basicAuth, (req, res) => {
     throw new Error(error.message);
   }
 });
-module.exports = routers;
+module.exports = router;
 

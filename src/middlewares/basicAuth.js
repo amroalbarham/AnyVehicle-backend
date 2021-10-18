@@ -9,16 +9,17 @@ module.exports = async (req, res, next) => {
     return;
   }
   let authHeaders = req.headers.authorization.split(' ');
-  if (authHeaders[0] !== 'Basic ') {
-    next('Invalid Login Headers');
+  if (authHeaders[0] !== 'Basic') {
+    next('Invalid Login Headers....');
     return;
   };
-  const [email, password] = await base64.decode.authHeaders[1].split(':');
+  const [email, password] =  base64.decode(authHeaders[1]).split(':');
+
   try {
     const validUser = await UserModel.authenticateBasic(email, password);
-    req.token = UserModel.generatetoken(validUser);
+    req.token = UserModel.generateToken(validUser);
     next();
   } catch (error) {
-    next('Invalid Login');
+    next('Invalid Login..');
   }
 };
