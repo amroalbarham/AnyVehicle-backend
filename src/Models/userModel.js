@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const jwt = require('jwt');
+const jwt = require('jsonwebtoken');
 const maintenanceShema = require('./maintenanceModel.js');
 const SECRET = process.env.SECRET;
 
@@ -11,7 +11,7 @@ const userSchema = mongoose.Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
-  role: { type: String, required: true, default: 'user', enum: ['admin', 'user'] },
+  role: { type: String, default: 'user', enum: ['admin', 'user'], required: true },
   repairRequests: [maintenanceShema],
 },
   {
@@ -42,10 +42,11 @@ userSchema.statics.generateToken = function (user) {
     role: user.role,
     capabilities: user.capabilities,
   };
+  
   return jwt.sign(userToken, SECRET);
 };
 
-userSchema.statics.authenticateToken = async function (token) {
+userSchema.statics.authenticateToken  = async function (token) {
   try {
     const data = jwt.verify(token, SECRET);
     const user = await this.findOne({ email: data.email });
@@ -55,5 +56,5 @@ userSchema.statics.authenticateToken = async function (token) {
     throw new Error(error.message);
   }
 };
-
-module.exports = mongoose.model('user', userSchema);
+const userModel = mongoose.model('user', userSchema);
+module.exports = userModel;
